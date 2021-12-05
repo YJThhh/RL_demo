@@ -3,12 +3,14 @@ import time
 
 import gym
 import matplotlib.pyplot as plt
+import numpy as np
+from IPython import display
 
 from models.PolicyGradientAgent import PolicyGradientAgent
 from models.PolicyGradientNetwork import PolicyGradientNetwork
 
 start = time.time()
-EXP_NAME = "exp_1"
+EXP_NAME = "exp_2"
 
 print("*** 开始测试")
 game = gym.make('LunarLander-v2')
@@ -18,14 +20,14 @@ save_path = os.path.join('./experiments', EXP_NAME, "model.pth")
 agent.load(save_path)
 
 agent.network.eval()  # 測試前先將 network 切換為 evaluation 模式
-NUM_OF_TEST = 5  # Do not revise it !!!!!
+NUM_OF_TEST = 500  # Do not revise it !!!!!
 test_total_reward = []
 action_list = []
 for i in range(NUM_OF_TEST):
     actions = []
     state = game.reset()
 
-    img = plt.imshow(game.render(mode='rgb_array'))
+    # img = plt.imshow(game.render(mode='rgb_array'))
     total_reward = 0
 
     done = False
@@ -44,3 +46,5 @@ for i in range(NUM_OF_TEST):
 
     action_list.append(actions)  # 儲存你測試的結果
     print("length of actions is ", len(actions))
+
+print(f"Your final reward is : %.2f"%np.mean(test_total_reward))

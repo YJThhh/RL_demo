@@ -140,8 +140,3 @@ def separate_files_by_parts(file_path, save_path, extensions, part_num):
             except:
                 print("Unexpected error:", sys.exc_info())
 
-
-if __name__ == "__main__":
-    # separate_files_by_txt("../../datasets/CelebA/img_align_celeba", "../../datasets/CelebA/list_eval_partition.txt",
-    #                       "../../datasets/CelebA")
-    separate_files_by_parts("../../datasets/CelebA_crop", "../../datasets/CelebA_crop_separate", "png", 6)

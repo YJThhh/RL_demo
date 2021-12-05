@@ -4,7 +4,7 @@ import time
 import gym
 import numpy as np
 import torch
-from tqdm.notebook import tqdm
+from tqdm import tqdm
 
 from models.PolicyGradientAgent import PolicyGradientAgent
 from models.PolicyGradientNetwork import PolicyGradientNetwork
@@ -42,13 +42,13 @@ agent = PolicyGradientAgent(network)
 #
 agent.network.train()  # 訓練前，先確保 network 處在 training 模式
 EPISODE_PER_BATCH = 5  # 每蒐集 5 個 episodes 更新一次 agent
-NUM_BATCH = 10  # 總共更新 400 次
+NUM_BATCH = 400  # 總共更新 400 次
 EXP_NAME = "exp_1"
 
 #
 avg_total_rewards, avg_final_rewards = [], []
 
-prg_bar = (range(NUM_BATCH))
+prg_bar = range(NUM_BATCH)
 for batch in tqdm(prg_bar):
 
     log_probs, rewards = [], []
