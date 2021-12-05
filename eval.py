@@ -10,7 +10,7 @@ from models.PolicyGradientAgent import PolicyGradientAgent
 from models.PolicyGradientNetwork import PolicyGradientNetwork
 
 start = time.time()
-EXP_NAME = "exp_2"
+EXP_NAME = "exp_1"
 
 print("*** 开始测试")
 game = gym.make('LunarLander-v2')

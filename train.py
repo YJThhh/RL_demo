@@ -43,7 +43,7 @@ agent = PolicyGradientAgent(network)
 agent.network.train()  # 訓練前，先確保 network 處在 training 模式
 EPISODE_PER_BATCH = 5  # 每蒐集 5 個 episodes 更新一次 agent
 NUM_BATCH = 400  # 總共更新 400 次
-EXP_NAME = "exp_1"
+EXP_NAME = "exp_1+decaying"
 
 #
 avg_total_rewards, avg_final_rewards = [], []
@@ -56,7 +56,7 @@ for batch in tqdm(prg_bar):
 
     # 蒐集訓練資料
     for episode in range(EPISODE_PER_BATCH):
-
+        rewards_episode=[]
         state = game.reset()
         total_reward, total_step = 0, 0
         seq_rewards = []
@@ -68,9 +68,11 @@ for batch in tqdm(prg_bar):
             log_probs.append(log_prob)  # [log(a1|s1), log(a2|s2), ...., log(at|st)]
             # seq_rewards.append(reward)
             state = next_state
+
             total_reward += reward
             total_step += 1
-            rewards.append(reward)  # 改這裡
+            rewards_episode.append(reward)
+
             # ! 重要 ！
             # 現在的reward 的implementation 為每個時刻的瞬時reward, 給定action_list : a1, a2, a3 ......
             #                                                       reward :     r1, r2 ,r3 ......
@@ -78,18 +80,23 @@ for batch in tqdm(prg_bar):
             #                                                       reward :     r1+0.99*r2+0.99^2*r3+......, r2+0.99*r3+0.99^2*r4+...... ,r3+0.99*r4+0.99^2*r5+ ......
             # boss : implement DQN
             if done:
-                final_rewards.append(reward)
-                total_rewards.append(total_reward)
+                for start in range(len(rewards_episode)):
+                    sum=0
+                    for idx,item in enumerate(rewards_episode[start:-1]):
+                        sum=sum+item* 0.99 **idx
+                    rewards.append(sum)  # 改這裡
+                # final_rewards.append(reward)
+                # total_rewards.append(total_reward)
                 break
 
     # print(f"rewards looks like ", np.shape(rewards))
     # print(f"log_probs looks like ", np.shape(log_probs))
     # 紀錄訓練過程
-    avg_total_reward = sum(total_rewards) / len(total_rewards)
-    avg_final_reward = sum(final_rewards) / len(final_rewards)
-    avg_total_rewards.append(avg_total_reward)
-    avg_final_rewards.append(avg_final_reward)
-    print("avg_total_reward: " + str(avg_total_reward) + " avg_final_reward: " + str(avg_final_reward))
+    # avg_total_reward = sum(total_rewards) / len(total_rewards)
+    # avg_final_reward = sum(final_rewards) / len(final_rewards)
+    # avg_total_rewards.append(avg_total_reward)
+    # avg_final_rewards.append(avg_final_reward)
+    # print("avg_total_reward: " + str(avg_total_reward) + " avg_final_reward: " + str(avg_final_reward))
     # prg_bar.set_description(f"Total: {avg_total_reward: 4.1f}, Final: {avg_final_reward: 4.1f}")
 
     # 更新網路
